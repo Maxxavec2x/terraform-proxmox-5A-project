@@ -74,5 +74,20 @@ cipassword = var.cipwd
 #${var.ssh_key}
 
 #EOF
-
 }
+# ----------------------------------------------------
+# Génération automatique du fichier Ansible inventory
+# ----------------------------------------------------
+resource "local_file" "ansible_inventory" {
+  depends_on = [proxmox_vm_qemu.proxmox]
+
+  content = <<EOT
+[all]
+%{ for index, vm in proxmox_vm_qemu.proxmox ~}
+${vm.name} ansible_host=${vm.ipconfig0} ansible_user=${var.ciuser} ansible_password=${var.cipwd}
+%{ endfor ~}
+EOT
+
+  filename = "${path.module}/../ansible/inventory.ini"
+}
+
