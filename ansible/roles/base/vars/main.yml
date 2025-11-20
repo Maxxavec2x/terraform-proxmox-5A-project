@@ -1,0 +1,12 @@
+# Variables du role BASE
+---
+timezone: "Europe/Paris"
+
+packages:
+  - vim
+  - curl
+  - wget
+  - htop
+
+admin_user: "toto"
+admin_password: "azerty" 

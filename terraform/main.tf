@@ -1,5 +1,5 @@
 locals {
-  pm_api_token_secret = trim(file("${path.module}/secret.txt"), "\n")
+  pm_api_token_secret = trim(file("${path.module}/token-pve2.txt"), "\n")
 }
 resource "proxmox_vm_qemu" "proxmox" {
 
