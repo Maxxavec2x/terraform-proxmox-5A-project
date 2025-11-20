@@ -41,9 +41,9 @@ nameserver = var.server_dns
 
 disks {
 
-virtio {
+scsi {
 
-virtio0 {
+scsi0 {
 
 disk {
 
