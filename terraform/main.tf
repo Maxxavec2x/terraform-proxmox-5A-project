@@ -10,7 +10,7 @@ name = element(var.name,count.index)
 target_node = var.target_node
 
 clone = var.clone
-
+full_clone = false
 #cpu
 
 cpu {
