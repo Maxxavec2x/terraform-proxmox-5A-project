@@ -11,4 +11,8 @@ Vous avez besoin de la clé d'api proxmox (secrète) pour lancer le déploiement
 Une fois la clé obtenue, mettez là dans un fichier ```secret.txt``` à la racine du git.
 Vous pouvez ensuite exécuter le script ```./deploy_terraform.sh```
 
+## Pour détruire les ressources : 
 
+```bash 
+terraform apply -destroy -var-file variables.tfvars
+```

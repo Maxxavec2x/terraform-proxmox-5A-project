@@ -1,0 +1,47 @@
+
+---
+# =====================================
+# Rôle : base
+# Tâches de configuration système de base
+# =====================================
+
+- name: Mettre à jour les paquets APT
+  apt:
+    update_cache: yes
+    upgrade: dist
+  tags: update
+
+- name: Installer les paquets de base
+  apt:
+    name: "{{ packages }}"
+    state: present
+  tags: packages
+
+- name: Configurer le fuseau horaire
+  timezone:
+    name: "{{ timezone }}"
+  tags: timezone
+
+
+- name: Créer un utilisateur d'administration
+  user:
+    name: "{{ admin_user }}"
+    comment: "Utilisateur d'administration"
+    groups: sudo
+    shell: /bin/bash
+    password: "{{ admin_password | password_hash('sha512') }}"
+  tags: user
+
+- name: Ajouter la clé SSH publique d'administration
+  authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  tags: ssh
+
+- name: Désactiver la connexion SSH root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+  notify: Restart SSH
+  tags: ssh
