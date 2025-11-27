@@ -16,7 +16,7 @@ network_bridge = ["vmbr0"]
 
 ip = ["ip=172.19.30.100/16,gw=172.19.0.1"]
 
-server_dns = "192.168.1.1"
+server_dns = "8.8.8.8"
 
 size = "32"
 
