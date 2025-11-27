@@ -4,12 +4,28 @@
 # Rôle : base
 # Tâches de configuration système de base
 # =====================================
+- name: Bootstrap Debian 13 – force TTY + non-interactive APT
+  raw: >-
+    DEBIAN_FRONTEND=noninteractive apt-get update -qq &&
+    DEBIAN_FRONTEND=noninteractive apt-get install -y -qq
+    python3-apt python3-passlib ca-certificates gnupg >/dev/null 2>&1
+  args:
+    executable: /bin/bash
+  changed_when: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    DEBIAN_PRIORITY: critical
+    NEEDRESTART_MODE: a
+    APT_LISTCHANGES_FRONTEND: none
 
-- name: Mettre à jour les paquets APT
+- name: Gather facts now that Python works
+  setup:
+
+- name: Upgrade all packages
   apt:
-    update_cache: yes
     upgrade: dist
-  tags: update
+    update_cache: yes
+    cache_valid_time: 3600
 
 - name: Installer les paquets de base
   apt:
@@ -35,7 +51,7 @@
 - name: Ajouter la clé SSH publique d'administration
   authorized_key:
     user: "{{ admin_user }}"
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
   tags: ssh
 
 - name: Désactiver la connexion SSH root
