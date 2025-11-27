@@ -1,0 +1,14 @@
+plugin: community.proxmox.proxmox
+url: https://172.19.3.19:8006/  
+user: root@pam
+token_id: terraform
+token_secret: 693ea77e-a711-4dcc-9e3f-d2080bcd6442
+validate_certs: false          
+want_proxmox_nodes_ansible_host: true
+compose:
+  ansible_host: proxmox_agent_interfaces[1]["ip-addresses"][0].split('/')[0]
+keyed_groups:
+  - key: proxmox_tags_parsed
+    separator: ""
+groups:
+  ubuntu_servers: "'ubuntu' in (proxmox_tags_parsed|list)"
