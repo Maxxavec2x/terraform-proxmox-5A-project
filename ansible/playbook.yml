@@ -1,0 +1,13 @@
+---
+# ===========================================================
+# Playbook principal : configuration de base des machines
+# ===========================================================
+
+- name: Configuration des serveurs Debian via le rôle "base"
+  hosts: debian
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - base
+
