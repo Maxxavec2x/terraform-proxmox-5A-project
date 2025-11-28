@@ -1,0 +1,100 @@
+# TESTED ON DEBIAN 12 container
+# REQUIERMENTS: ssh server, sudo installed, a user with root access via sudo
+---
+- name: Create "{{ installation_directory }}" directory
+  become: true
+  file:
+    path: "{{ installation_directory }}"
+    state: directory
+- name: Set correct ownership on wiki directory for setup
+  become: true
+  file:
+    dest: "{{ installation_directory }}"
+    owner: "toto"
+    group: "toto"
+    recurse: yes
+- name: Download wikijs source
+  get_url:
+    url: "{{ wikijs_url_download }}"
+    dest: "{{ installation_directory }}"
+- name: Untar source
+  unarchive:
+    remote_src: yes
+    src: "{{ installation_directory }}/wiki-js.tar.gz"
+    dest: "{{ installation_directory }}"
+- name: Rename properly conf file
+  file:
+    src: "{{ installation_directory }}/config.sample.yml"
+    dest: "{{ installation_directory }}/config.yml"
+    state: hard
+
+
+- name: Download requiered packages
+  become: true
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+
+- name: Create wikijs database
+  become: true
+  become_user: "{{ postgres_user }}"
+  community.postgresql.postgresql_db:
+    name: "{{ database_name }}"
+  
+- name: Create wikijs user on postgres
+  become: true
+  become_user: "{{ postgres_user }}"
+  community.postgresql.postgresql_user:
+    state: present
+    name: "{{ database_username }}"
+    password: "{{ database_user_password }}"
+- name: Change owner wiki database to wikijs user
+  become: true
+  become_user: "{{ postgres_user }}"
+  community.postgresql.postgresql_owner:
+    db: "{{ database_name }}"
+    new_owner: "{{ database_username }}"
+- name: Grant all privileges on wiki database to wikijs
+  become: true
+  become_user: "{{ postgres_user }}"
+  community.postgresql.postgresql_privs:
+    database: "{{ database_name }}"
+    roles: "{{ database_username }}"
+    privs: ALL
+    type: database
+- name: Grant all privileges on public schema to wikijs
+  become: true
+  become_user: "{{ postgres_user }}"
+  community.postgresql.postgresql_privs:
+    database: "{{ database_name }}"
+    roles: "{{ database_username }}"
+    privs: ALL
+    obj: public
+    type: schema
+
+- name: Create systemd file config
+  become: true
+  template:
+    dest: "/etc/systemd/system/{{ service_name }}"
+    src: "{{ service_file_name }}"
+- name: Create system wikijs user
+  become: true
+  user:
+    name: "{{ service_username }}"
+    shell: /sbin/nologin
+    system: yes
+- name: Set correct owner ship on wiki directory
+  become: true
+  file:
+    path: "{{ installation_directory }}"
+    owner: "{{ service_username }}"
+    group: "{{ service_username }}"
+    mode: "0700"
+    recurse: yes
+- name: Systemd start wikijs service
+  become: true
+  systemd:
+    name: "{{ service_name }}"
+    enabled: true
+    state: started

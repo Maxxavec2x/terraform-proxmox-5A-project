@@ -4,12 +4,11 @@ locals {
 }
 
 resource "proxmox_vm_qemu" "proxmox" {
-  count       = var.instance_count
-  name        = element(var.name, count.index)
+  count       = length(var.vms)
+  name        = var.vms[count.index].name
   target_node = var.target_node
   clone       = var.clone
-  full_clone  = false# Important: false = linked clone → Cloud-Init broken on most storage types
-  
+  full_clone  = false
   cpu {
     cores    = 1
     sockets  = 1
@@ -46,7 +45,7 @@ disks {
   os_type    = "cloud-init"
   ciuser      = var.ciuser          # root
   cipassword  = var.cipwd           # azertyuiop
-  ipconfig0   = element(var.ip, count.index)
+  ipconfig0   = var.vms[count.index].ip
   nameserver  = var.server_dns
   sshkeys     = local.ssh_public_key
   # Make the console work again in the web GUI
@@ -65,20 +64,25 @@ disks {
 # ----------------------------------------------------
 # Génération automatique du fichier Ansible inventory
 # ----------------------------------------------------
+# main.tf → local_file "ansible_inventory"
+# main.tf → version ultra-simple et définitive
+# VERSION DYNAMIQUE PARFAITE (recommandée)
 resource "local_file" "ansible_inventory" {
-  depends_on = [proxmox_vm_qemu.proxmox]
-
-  content  = <<-EOT
-    [debian]
-    %{ for vm in proxmox_vm_qemu.proxmox ~}
-    ${vm.name} ansible_host=${vm.default_ipv4_address} ansible_user=${var.ciuser} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-    %{ endfor ~}
-
-    [debian:vars]
+  content = <<-EOT
+    [all:vars]
+    ansible_user=root
+    ansible_ssh_common_args='-o StrictHostKeyChecking=no'
     ansible_python_interpreter=/usr/bin/python3
-  # Debian 13 needs this
+
+    %{ for role in distinct(flatten([for vm in var.vms : vm.roles])) }
+    [${role}Group]
+    %{ for vm in var.vms }
+    %{ if contains(vm.roles, role) }
+    ${vm.name} ansible_host=${proxmox_vm_qemu.proxmox[index(var.vms, vm)].default_ipv4_address}
+    %{ endif }
+    %{ endfor }
+    %{ endfor ~}
   EOT
+
   filename = "${path.module}/../ansible/inventory.ini"
 }
-
-

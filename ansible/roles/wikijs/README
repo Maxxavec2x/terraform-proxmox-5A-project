@@ -1,0 +1,24 @@
+# Installation de wikijs
+## Prérequis
+La machine qui execute ansible le script doit avoir `ansible d'installé`.
+La machine qui hébergera le serveur `wikijs` doit avoir la commande `sudo` d'installé, être un serveur `ssh` ainsi qu'avoir un utilisateur pouvant être privilégié.
+
+## Installation
+Un fichier contenant des variables sensibles et chiffré, il est donc nécessaire lors de l'execution de préciser à `Ansible` le mot de passe. Pour se faire, on peut mettre le mot de passe dans un fichier et indiquer où celui ci se trouve via la variable d'environnement `ANSIBLE_VAULT_PASSWORD_FILE`.
+
+Le script prévoit que l'hôte/les hôtes de `wikijs` soit nommé `wikijs` dans l'inventaire.
+
+Par exemple, le fichier `inventory.ini` peut ressembler à ça.
+```bash
+[wikijs]
+wiki ansible_host=172.19.11.227 ansible_ssh_user=ansible ansible_ssh_pass=azerty
+```
+Il ne reste plus qu'à executer le playbook :
+```bash
+ansible-playbook -i inventory.ini install-wikijs.yml
+```
+
+## Sécurité
+Le script peut s'executer par le biais d'un simple utilisateur. Cet utilisateur à besoin d'être priviligié pour effectuer certaines opérations comme l'installation de paquets. Tout au long de l'installation, les droits sont réduits au strict nécessaire.
+
+Les secrets sont gardés secret par le biai d'un `Ansible Vault`.
