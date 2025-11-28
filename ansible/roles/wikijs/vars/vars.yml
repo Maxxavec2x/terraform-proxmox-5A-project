@@ -1,0 +1,19 @@
+# Variables to download wikijs on the system
+installation_directory: /opt/wiki
+wikijs_url_download: https://github.com/Requarks/wiki/releases/latest/download/wiki-js.tar.gz
+
+# Package to install
+packages:
+  - postgresql
+  - python3-psycopg2
+  - nodejs
+
+# Variables to setup the database
+database_name: wiki
+database_username: wikijs
+postgres_user: postgres
+
+# Variables to create the wikijs.service
+service_username: wikijs
+service_name: wiki.service
+service_file_name: ../files/systemd_wikijs.conf

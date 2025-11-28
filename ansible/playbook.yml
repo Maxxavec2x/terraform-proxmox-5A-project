@@ -4,10 +4,20 @@
 # ===========================================================
 
 - name: Configuration des serveurs Debian via le rôle "base"
-  hosts: debian
+  hosts: baseGroup
   become: yes
   gather_facts: yes
 
   roles:
     - base
+
+- name: WikiJS servers
+  hosts: wikijsGroup
+  become: yes
+  roles:
+    - wikijs
+  vars_files:
+    - roles/wikijs/vars/vars.yml
+    - roles/wikijs/vars/vars_vault.yml
+
 
