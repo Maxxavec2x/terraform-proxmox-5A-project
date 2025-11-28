@@ -1,5 +1,4 @@
-# Projet 5A terraform
-
+# Déploiement de VM sur Proxmox via Terraform
 
 ## Installation 
 Installez Terraform.
@@ -8,11 +7,10 @@ Pour installer le projet, tirez le projet depuis le github, puis exécutez la co
 ## Déploiement
 
 Vous avez besoin de la clé d'api proxmox (secrète) pour lancer le déploiement. Demandez-la à Maxence SIBONI ou Thélio DOUCET.
-Une fois la clé obtenue, mettez là dans un fichier ```secret.txt``` à la racine du git.
-Vous pouvez ensuite exécuter le script ```./deploy_terraform.sh```
+Une fois la clé obtenue, mettez là dans un fichier ```token-pve2.txt``` dans le dossier terraform.
+Vous pouvez ensuite exécuter le script ```./deploy_terraform.sh```. Si vous souhaitez apporter des modifications, comme déployer plus de VMs ou chnager les adresses IPs, vous pouvez éditer le fichier ```variables.tfvars```.
 
-## Pour détruire les ressources : 
+## Destruction des ressources
 
-```bash 
-terraform apply -destroy -var-file variables.tfvars
+Pour détruire les ressources créées, vous pouvez utiliser le script ```./destroy_terraform.sh```
 ```
