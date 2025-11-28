@@ -37,3 +37,8 @@ Avant de lancer le script ```./start_ansible.sh```, il est nécessaire d'install
 ```pip install --break-system-packages passlib```
 Ce paquet sert à Ansible à créer le hash du password pour la création d'un utilisateur.
 
+## Sécurité et gestion des secrets
+On créé un user 'toto', et on ajoute notre clé publique afin de pouvoir se connecter en tant que 'toto' sur les machines. Aussi, on désactive la possibilité de se connecter en tant que root sur les machines.
+
+
+

@@ -13,4 +13,6 @@ Vous pouvez ensuite exécuter le script ```./deploy_terraform.sh```. Si vous sou
 ## Destruction des ressources
 
 Pour détruire les ressources créées, vous pouvez utiliser le script ```./destroy_terraform.sh```
-```
+
+## Sécurité et gestion des secrets
+Comme la clé api Proxmox est une donnée sensible, elle n'est pas présente en dur dans notre code, mais provient d'un fichier situé sur la machine hôte, sous le nom: ```token-pve2.txt```. Aussi, on ajoute notre clé publique aux machines créé afin de pouvoir se connecter en tant que root.
