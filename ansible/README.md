@@ -2,7 +2,7 @@
 
 ## Architecture
 
-Le fichier ```inventory.ini``` est généré automatiquement à la suite du déploiement Terraform. On utilise des roles afin d'organiser le déploiement de différents services.
+Le fichier ```inventory.ini``` est généré automatiquement à la suite du déploiement Terraform. On utilise des rôles afin d'organiser le déploiement de différents services.
 ```
 .
 ├── ansible.cfg
@@ -34,7 +34,7 @@ Nous sommes passer via l'utilisation de rôles pour diviser le déploiement de n
 
 ## How to
 
-### Insallation
+### Installation
 Installez Ansible.
 Avant de lancer le script ```./start_ansible.sh```, il est nécessaire d'installer le paquet python suivant sur l'hôte.
 ```pip install --break-system-packages passlib```
