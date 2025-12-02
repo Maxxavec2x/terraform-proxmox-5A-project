@@ -37,3 +37,6 @@ L'objectif est de créer un projet scalable. C'est pourquoi notre architecture c
 
 Les préréquis liés aux différens outils sont présents dans le README de chaque dossier correspondant. Avant de vous lancer dans le déploiement de VMs, il est nécessaire de disposer d'un template sur votre instance Proxmox. Vous pouvez créer un template de VM cloud-init avec le script `create_disk_tempate.sh`, à créer sur votre instance Proxmox.
 
+## HOW TO
+
+Pour commencer il vous suffit de tirer le projet depuis Github. Ensuite, on lancera terraform, puis ansible. De ce fait, veuillez consulter la documentation présente dans les dossiers respectifs pour comprendre le fonctionnement de chaque partie.
